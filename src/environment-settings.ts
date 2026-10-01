@@ -26,11 +26,12 @@ const isConsentKey = (k: string): k is 'seeConsent' | 'controlConsent' | 'execCo
 
 /** Extract the permission subset from a broader settings object. */
 export function permissionSubset(
-  s: Record<string, unknown>
+  s: Record<string, unknown> | object
 ): EnvironmentPermissionSettings {
   const out: EnvironmentPermissionSettings = {};
+  const rec = s as Record<string, unknown>;
   for (const k of ENV_PERMISSION_KEYS) {
-    const v = s[k];
+    const v = rec[k];
     if (isConsentKey(k)) {
       if (v === 'always' || v === 'session' || v === 'never') out[k] = v;
     } else if (typeof v === 'boolean') {

@@ -8,7 +8,16 @@
 // Machine Proof & Machine Key
 // ---------------------------------------------------------------------------
 
-export type MachineProofPurpose = 'register' | 'settings' | 'hub-link' | 'hub-relay';
+export type MachineProofPurpose =
+  | 'register'
+  | 'settings'
+  | 'hub-link'
+  | 'hub-relay'
+  | 'session_attach'
+  | 'command_run'
+  | 'token_exchange'
+  | 'hub_remote'
+  | (string & {});
 export type ProofPurpose = MachineProofPurpose;
 
 export interface MachineKeyFile {

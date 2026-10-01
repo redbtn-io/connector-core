@@ -1,0 +1,46 @@
+{
+  "note": "TEST-ONLY key. Golden vector for redbtn-machine-proof/v1 shared by redbtn Desktop, the redbtn CLI and the webapp hub. Ed25519 is deterministic: sig must match byte for byte.",
+  "key": {
+    "publicKey": "MCowBQYDK2VwAyEAs2Sq3LauRA3sY6UQb6n3QQOeX5nMQ2fJP6jRyG/s9rI=",
+    "privateKey": "MC4CAQAwBQYDK2VwBCIEIHnsZ8dFg+JneleMfiSEGp+G5pD1v5ysHnFEbE0uGXHw"
+  },
+  "register": {
+    "proof": {
+      "v": 1,
+      "alg": "ed25519",
+      "purpose": "register",
+      "machineId": "mach-0123456789abcdef",
+      "subject": "inst-test-0001",
+      "ts": 1790000000000,
+      "nonce": "00112233445566778899aabbccddeeff",
+      "bodyHash": "",
+      "publicKey": "MCowBQYDK2VwAyEAs2Sq3LauRA3sY6UQb6n3QQOeX5nMQ2fJP6jRyG/s9rI=",
+      "sig": "gcF8l7sOSZgIeVZJ71ev/JElLduvU0b+SmaTjLQRRSpxPlzVpucTb5DXP4Mblm/jUdUf1t17DNLkYkL7uamaDA=="
+    },
+    "message": "redbtn-machine-proof/v1\npurpose:register\nmachine:mach-0123456789abcdef\nsubject:inst-test-0001\nts:1790000000000\nnonce:00112233445566778899aabbccddeeff\nbody:"
+  },
+  "settings": {
+    "body": {
+      "execEnabled": true,
+      "execAllow": [
+        "git",
+        "node"
+      ],
+      "seeConsent": "never"
+    },
+    "canonicalBody": "{\"execAllow\":[\"git\",\"node\"],\"execEnabled\":true,\"seeConsent\":\"never\"}",
+    "proof": {
+      "v": 1,
+      "alg": "ed25519",
+      "purpose": "settings",
+      "machineId": "mach-0123456789abcdef",
+      "subject": "env_test123",
+      "ts": 1790000000000,
+      "nonce": "ffeeddccbbaa99887766554433221100",
+      "bodyHash": "75413104055ccc05923b148294a9ef204c682936d9d9cbee1706f9d6628c91b7",
+      "publicKey": "MCowBQYDK2VwAyEAs2Sq3LauRA3sY6UQb6n3QQOeX5nMQ2fJP6jRyG/s9rI=",
+      "sig": "tXsW7NkyWTZBnIj38QxXbKzHEvBX5/jfQlsM4MOnCnwOEGDgWC7YH8JtsNQsy/Z50PfwSeGXBWg9HUyX+eMuCg=="
+    },
+    "message": "redbtn-machine-proof/v1\npurpose:settings\nmachine:mach-0123456789abcdef\nsubject:env_test123\nts:1790000000000\nnonce:ffeeddccbbaa99887766554433221100\nbody:75413104055ccc05923b148294a9ef204c682936d9d9cbee1706f9d6628c91b7"
+  }
+}

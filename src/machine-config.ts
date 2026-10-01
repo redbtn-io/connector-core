@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { defaultMachineConfigDir } from './machine-key.js';
-import type { MachineConfig } from './types.js';
+import type { ConnectServiceRecord, ConnectSettings, MachineConfig } from './types.js';
 
 const DEFAULTS: MachineConfig = {
   enabled: { environment: false, computer: false, control: false, exec: false },
@@ -51,7 +51,9 @@ export function updateMachineConfig(
   patch: {
     enabled?: Partial<MachineConfig['enabled']>;
     exec?: Partial<MachineConfig['exec']>;
-    connect?: MachineConfig['connect'];
+    connect?: Omit<ConnectSettings, 'services'> & {
+      services?: Record<string, ConnectServiceRecord | null>;
+    };
   },
   dir = defaultMachineConfigDir()
 ): MachineConfig {
@@ -63,12 +65,31 @@ export function updateMachineConfig(
       deny: Array.isArray(patch.exec?.deny) ? patch.exec!.deny : cur.exec.deny,
       cwdRoot: patch.exec?.cwdRoot !== undefined ? patch.exec.cwdRoot : cur.exec.cwdRoot,
       egress: patch.exec?.egress !== undefined ? patch.exec.egress : cur.exec.egress
-    },
-    ...(cur.connect || patch.connect ? { connect: { ...(cur.connect ?? {}), ...(patch.connect ?? {}) } } : {})
+    }
   };
 
-  mkdirSync(dir, { recursive: true });
-  writeFileSync(machineConfigPath(dir), JSON.stringify(next, null, 2) + '\n', { mode: 0o600 });
+  if (cur.connect || patch.connect) {
+    const { services: svcPatch, ...rest } = patch.connect ?? {};
+    const services: Record<string, ConnectServiceRecord> = { ...(cur.connect?.services ?? {}) };
+    for (const [hub, rec] of Object.entries(svcPatch ?? {})) {
+      if (rec === null) delete services[hub];
+      else if (rec) services[hub] = rec;
+    }
+    next.connect = { ...(cur.connect ?? {}), ...rest, services };
+  }
+
+  try {
+    mkdirSync(dir, { recursive: true });
+    let raw: Record<string, unknown> = {};
+    try {
+      raw = JSON.parse(readFileSync(machineConfigPath(dir), 'utf8')) as Record<string, unknown>;
+    } catch {
+      /* none yet */
+    }
+    writeFileSync(machineConfigPath(dir), JSON.stringify({ ...raw, ...next }, null, 2) + '\n', { mode: 0o600 });
+  } catch {
+    /* best-effort persistence */
+  }
   return next;
 }
 

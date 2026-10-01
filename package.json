@@ -1,6 +1,6 @@
 {
   "name": "@redbtn/connector-core",
-  "version": "0.0.2-alpha",
+  "version": "0.0.3-alpha",
   "description": "Shared connector core for redbtn Desktop and redbtn CLI: machine identity, Ed25519 proofs, environment settings, wire protocol, and presence.",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

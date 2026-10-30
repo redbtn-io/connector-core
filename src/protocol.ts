@@ -15,7 +15,8 @@ export const ALL_CAPABILITIES: readonly AgentCapability[] = [
   'tts',
   'chat',
   'computer',
-  'terminal'
+  'terminal',
+  'browser'
 ] as const;
 
 export function encodeClientMessage(msg: ClientMessage): string {

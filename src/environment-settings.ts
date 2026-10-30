@@ -19,6 +19,17 @@ export const ENV_PERMISSION_KEYS = [
 
 export type EnvPermissionKey = (typeof ENV_PERMISSION_KEYS)[number];
 
+/**
+ * Browser-only permission keys that are LOCAL-ONLY: deliberately absent from
+ * ENV_PERMISSION_KEYS, so `sanitizePermissions` drops them from any hub frame
+ * and `patchForPush`/`tighteningPatch` can never apply them — not even as a
+ * tightening. They live in the extension's local settings (changed only in
+ * its popup); the hub learns the current value from the connector's own
+ * register/settings report, never by pushing one.
+ */
+export const LOCAL_ONLY_PERMISSION_KEYS = ['tabScope', 'siteAllow', 'siteDeny', 'incognito'] as const;
+export type LocalOnlyPermissionKey = (typeof LOCAL_ONLY_PERMISSION_KEYS)[number];
+
 const CONSENT_RANK: Record<ConsentMode, number> = { never: 0, session: 1, always: 2 };
 
 const isConsentKey = (k: string): k is 'seeConsent' | 'controlConsent' | 'execConsent' =>

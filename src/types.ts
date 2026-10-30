@@ -124,18 +124,36 @@ export interface EnvironmentPermissionSettings {
   seeConsent?: ConsentMode;
   controlConsent?: ConsentMode;
   execConsent?: ConsentMode;
+  // ── Browser-only keys (redbtn Browser extension) ──
+  // LOCAL-ONLY (see LOCAL_ONLY_PERMISSION_KEYS in environment-settings.ts):
+  // they can never be loosened by a hub push — only tightened — because they
+  // decide which of the user's own tabs/sites an agent may touch. Widening
+  // them is a local act in the extension popup.
+  /** Which tabs agents may work in: their own "redbtn" group, or any tab. */
+  tabScope?: 'agent-group' | 'any';
+  /** Extra site patterns agents may use. */
+  siteAllow?: string[];
+  /** Site patterns agents may never use. */
+  siteDeny?: string[];
+  /** Whether agents may act in incognito windows (default off). */
+  incognito?: boolean;
 }
 
 // ---------------------------------------------------------------------------
 // Gateway Wire Protocol (/ws/desktop)
 // ---------------------------------------------------------------------------
 
-export type AgentCapability = 'exec' | 'alert' | 'tts' | 'chat' | 'computer' | 'terminal';
+export type AgentCapability = 'exec' | 'alert' | 'tts' | 'chat' | 'computer' | 'terminal' | 'browser';
 
-export interface MachineTrust {
-  status: 'local' | 'remote' | 'unverified';
-  reason?: string;
-}
+/**
+ * Machine trust as it appears on the wire (the gateway's `registered` ack
+ * carries it verbatim). This is the webapp's string union
+ * (lib/environments/machine-registry `MachineTrust`) — NOT an object:
+ *   local    — the registration proved the environment's enrolled key;
+ *   unproven — no (valid) proof, or a key that may not enrol yet;
+ *   mismatch — it proved a DIFFERENT key than the enrolled one.
+ */
+export type MachineTrust = 'local' | 'unproven' | 'mismatch';
 
 export interface MachineEnvironmentView {
   environmentId: string;
@@ -164,10 +182,12 @@ export interface ExecResult {
 }
 
 // Outbound (Client -> Gateway)
+export type EnvironmentKind = 'desktop-agent' | 'cli' | 'browser';
+
 export interface RegisterMessage {
   kind: 'register';
   id: string;
-  environmentKind: 'desktop-agent';
+  environmentKind: EnvironmentKind;
   name: string;
   machine: MachineInfo;
   capabilities: AgentCapability[];
@@ -255,7 +275,16 @@ export interface TerminalRpcDoneMessage {
   id: string;
 }
 
+export interface BrowserResultMessage {
+  kind: 'browser_result';
+  id: string;
+  ok: boolean;
+  result?: Record<string, unknown>;
+  error?: ProtocolError;
+}
+
 export type ClientMessage =
+  | BrowserResultMessage
   | RegisterMessage
   | PingMessage
   | ExecResultMessage
@@ -392,7 +421,15 @@ export interface TerminalRpcCancelMessage {
   id: string;
 }
 
+export interface BrowserRequestMessage {
+  kind: 'browser';
+  id: string;
+  request: Record<string, unknown>;
+  _consentWaiver?: { sense: string; until: string };
+}
+
 export type ServerMessage =
+  | BrowserRequestMessage
   | RegisteredMessage
   | ErrorMessage
   | PongMessage

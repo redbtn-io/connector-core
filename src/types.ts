@@ -133,8 +133,6 @@ export interface EnvironmentPermissionSettings {
   tabScope?: 'agent-group' | 'any';
   /** Extra site patterns agents may use. */
   siteAllow?: string[];
-  /** Site patterns agents may never use. */
-  siteDeny?: string[];
   /** Whether agents may act in incognito windows (default off). */
   incognito?: boolean;
 }

@@ -27,7 +27,7 @@ export type EnvPermissionKey = (typeof ENV_PERMISSION_KEYS)[number];
  * its popup); the hub learns the current value from the connector's own
  * register/settings report, never by pushing one.
  */
-export const LOCAL_ONLY_PERMISSION_KEYS = ['tabScope', 'siteAllow', 'siteDeny', 'incognito'] as const;
+export const LOCAL_ONLY_PERMISSION_KEYS = ['tabScope', 'siteAllow', 'incognito'] as const;
 export type LocalOnlyPermissionKey = (typeof LOCAL_ONLY_PERMISSION_KEYS)[number];
 
 const CONSENT_RANK: Record<ConsentMode, number> = { never: 0, session: 1, always: 2 };

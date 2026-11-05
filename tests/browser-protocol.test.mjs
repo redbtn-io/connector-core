@@ -37,10 +37,10 @@ test('local-only browser keys never ride a hub push', () => {
   // sanitizePermissions drops them entirely: a hub frame cannot even tighten
   // tabScope/site lists/incognito — they are changed only in the extension.
   assert.deepEqual(
-    entry.sanitizePermissions({ tabScope: 'any', siteAllow: ['x'], siteDeny: [], incognito: true, execEnabled: false }),
+    entry.sanitizePermissions({ tabScope: 'any', siteAllow: ['x'], incognito: true, execEnabled: false }),
     { execEnabled: false },
   );
-  assert.deepEqual(entry.LOCAL_ONLY_PERMISSION_KEYS, ['tabScope', 'siteAllow', 'siteDeny', 'incognito']);
+  assert.deepEqual(entry.LOCAL_ONLY_PERMISSION_KEYS, ['tabScope', 'siteAllow', 'incognito']);
   const patch = entry.patchForPush(
     { execEnabled: true },
     { tabScope: 'any', execEnabled: false },
